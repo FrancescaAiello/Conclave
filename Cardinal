@@ -1,0 +1,206 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Cardinal implements Runnable {
+
+    public int influence;                          //influenza del cardinale
+    public List<String> total_card;
+    public List<Tuple> Myfavourite;               //*** CAMBIATO: da List<String> a List<Tuple> ***
+    public int x_cord;                             //coordinata x
+    public int y_cord;                             //coordinata y
+    public final List<Cardinal> Thread_list;      //lista con tutti i Thread Cardinal
+    public final String name;                      //nome del cardinale
+    public boolean active;                         //stato del Thread
+    private static final int GRID_SIZE = 30;        // size griglia
+
+    private static final Object lock = new Object();   //lock condiviso
+    private static boolean canMove = false;            //condizione di movimento
+    private static boolean isVoting = false;           //controllo voto
+
+    //costruttore Cardinal
+    public Cardinal(String name, List<String> total_card, List<String> papable_list, List<Cardinal> Thread_list) {
+
+        this.name = name;                                                       //assegna nome al cardinale
+        this.total_card = total_card;                                           //aggiorna lista di tutti i cardinali presenti
+        this.influence = new Random().nextInt(6) + 1;                    //assegna un intero fra 1-6 rappresentante l'influenza del cardinale(NON CAMBIATE<----)
+        this.x_cord = new Random().nextInt(GRID_SIZE);
+        this.y_cord = new Random().nextInt(GRID_SIZE);                          // assegna coordinate iniziali random within griglia
+
+        this.active = true;                                                     //segna lo stato del Thread come attivo
+        this.Thread_list = Thread_list;                                         //fornisce al cardinale la lista di tutti i thread Cardinal
+
+        synchronized (Thread_list) {
+            Thread_list.add(this);                                              //aggiunge il Thread Cardinal creato alla lista sincronizzata
+        }
+
+        List<String> papabili_copy = new ArrayList<>(papable_list);  // copia per non modificare la lista originale
+        Collections.shuffle(papabili_copy);                          // mischiamo i nomi
+
+        List<Integer> scores = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) scores.add(i);                 // creo lista di numeri da 1 a 10
+        Collections.shuffle(scores);                                // mischiamo i valori
+
+        this.Myfavourite = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            this.Myfavourite.add(new Tuple(papabili_copy.get(i), (double)scores.get(i)));
+        }
+    }
+
+    //metodo run del Thread Cardinal
+    public void run() {
+        while (active) {                                       //itera loop finchè il Thread è attivo
+
+            synchronized (lock) {
+                if (isVoting) {                                //blocco sincronizzato che aspetta finche la votazione non termina
+                    waitForVotingEnd();
+                }
+            }
+
+            move();                                            //Cardinal si muove di un passo
+            interact();                                        //Cardinal interagisce con i Cardinal nella stessa casella
+
+            try {
+                Thread.sleep(100);                        //pausa fra un passo e l'altro
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private void waitForVotingEnd() {
+        synchronized (lock) {
+            while (isVoting) {
+                try {                                             //blocco sincronizzato che aspetta che il voto termini
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
+    public int move_cord(int cord){
+        if (cord > 0 && cord < GRID_SIZE - 1) {
+            return cord + new Random().nextInt(-1, 2);  // può andare -1, 0, +1
+        }
+        else if (cord == 0) {
+            return cord + new Random().nextInt(0, 2);   // può andare 0, +1
+        }
+        else { // cord == GRID_SIZE - 1
+            return cord + new Random().nextInt(-1, 1);  // può andare -1, 0
+        }
+    }
+    public void move() {                                             //metodo per muovere il Cardinal
+        x_cord = move_cord(x_cord);                                  //fa un passo lungo x
+        y_cord = move_cord(y_cord);                                  //fa un passo lungo y
+    }
+
+    public void interact() {                 //metodo per far interagire il Cardinal
+        List<Cardinal> sameCord = new ArrayList<>();             //lista cardinali nella stessa posizione
+
+        //trova tutti i cardinali nella stessa posizione
+        synchronized (Thread_list) {
+            for (Cardinal c : Thread_list) {
+                if (c != this && c.x_cord == this.x_cord && c.y_cord == this.y_cord) {
+                    sameCord.add(c);
+                }
+            }
+        }
+
+        if (!sameCord.isEmpty()) {       //se ci sono altri cardinali nella stessa posizione
+            sameCord.add(this);         //aggiunge se stesso alla lista
+
+            // Calcola somma delle influenze
+            int totalInfluence = 0;
+            for (Cardinal c : sameCord) {
+                totalInfluence += c.influence;
+            }
+
+            // Lista per i nuovi punteggi
+            List<Tuple> newPreferences = new ArrayList<>();
+
+            // Per ogni cardinale nelle liste Myfavourite
+            for (Cardinal owner : sameCord) {
+                for (Tuple tuple : owner.Myfavourite) {
+                    String candidateName = tuple.name;
+
+                    // Controlla se già processato
+                    boolean alreadyDone = false;
+                    for (Tuple processed : newPreferences) {
+                        if (processed.name.equals(candidateName)) {
+                            alreadyDone = true;
+                            break;
+                        }
+                    }
+
+                    // Se non ancora processato, calcola media ponderata
+                    if (!alreadyDone) {
+                        double weightedSum = 0.0;  // somma pesata
+
+                        // Per ogni cardinale che si è incontrato
+                        for (Cardinal c : sameCord) {
+                            double voteValue = 0.0;  // default 0
+
+                            // Cerca il candidato nella lista di questo cardinale
+                            for (Tuple t : c.Myfavourite) {
+                                if (t.name.equals(candidateName)) {
+                                    voteValue = t.score;
+                                    break;
+                                }
+                            }
+
+                            // Aggiungi contributo: influenza * voto
+                            weightedSum += c.influence * voteValue;
+                        }
+
+                        // Media ponderata
+                        double finalScore = weightedSum / totalInfluence;
+
+                        newPreferences.add(new Tuple(candidateName, finalScore));
+                    }
+                }
+            }
+
+            // Ordina dal punteggio più alto al più basso
+            for (int i = 0; i < newPreferences.size() - 1; i++) {
+                for (int j = i + 1; j < newPreferences.size(); j++) {
+                    if (newPreferences.get(i).score < newPreferences.get(j).score) {
+                        Tuple temp = newPreferences.get(i);
+                        newPreferences.set(i, newPreferences.get(j));
+                        newPreferences.set(j, temp);
+                    }
+                }
+            }
+
+            // Prende solo i primi 10
+            List<Tuple> top10 = new ArrayList<>();
+            for (int i = 0; i < Math.min(10, newPreferences.size()); i++) {
+                top10.add(newPreferences.get(i));
+            }
+
+            // Assegna la nuova lista a tutti i cardinali
+            for (Cardinal c : sameCord) {
+                c.Myfavourite = new ArrayList<>(top10);
+            }
+        }
+    }
+    // Metodi statici (non dipendenti dalla singola istanza di Cardinal) per controllare le azioni di tutti i Cardinal
+
+    public static void startVoting() {
+        synchronized (lock) {
+            isVoting = true;
+            canMove = false;                                           //metodo che notifica tutti i Cardinal che sta avvenendo una votazione
+            System.out.println("Votazione in corso...\n");
+            lock.notifyAll();
+        }
+    }
+
+    public static void endVoting() {
+        synchronized (lock) {
+            isVoting = false;
+            canMove = true;                                                                        //metodo che avvisa tutti i Cardinali che è finita la votazione
+            System.out.println("fine votazione, i cardinali riprendono a muoversi.\n");
+            lock.notifyAll();
+        }
+    }
+}

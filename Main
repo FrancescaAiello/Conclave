@@ -5,20 +5,20 @@ public class Main_c {
     public static void main(String[] args) throws InterruptedException {
 
         final List<String> total_card = Arrays.asList(    //lista con i nomi di tutti i cardinali che partecipano al conclave
-                "Aaron", "Abigail", "Adam", "Adrian", "Aisha", "Alan", "Albert", "Alex", "Alexa", "Alexander",
-                "Alice", "Alicia", "Alyssa", "Amanda", "Amelia", "Amy", "Andrea", "Andrew", "Angela", "Anna",
-                "Anthony", "Arthur", "Ashley", "Austin", "Barbara", "Benjamin", "Bianca", "Brandon", "Brenda", "Brian",
-                "Brittany", "Caleb", "Camila", "Carl", "Carla", "Carlos", "Carmen", "Caroline", "Catherine", "Charles",
-                "Charlotte", "Chloe", "Christian", "Christina", "Christopher", "Cindy", "Claire", "Clara", "Colin", "Connor",
-                "Daniel", "Danielle", "David", "Deborah", "Derek", "Diana", "Diego", "Dominic", "Donna", "Dylan",
-                "Eddie", "Edward", "Elena", "Eleanor", "Elizabeth", "Ella", "Emily", "Emma", "Eric", "Erica",
-                "Ethan", "Eva", "Evelyn", "Faith", "Felix", "Fiona", "Francis", "Gabriel", "Gavin", "George",
-                "Grace", "Gregory", "Hailey", "Hannah", "Harold", "Heather", "Henry", "Holly", "Hope", "Hunter",
-                "Ian", "Isabel", "Isabella", "Isaac", "Irene", "Jack", "Jacob", "James", "Jamie", "Jasmine",
-                "Jason", "Jean", "Jeffrey", "Jennifer", "Jeremy", "Jessica", "Joan", "John", "Johnny", "Jonathan",
-                "Jordan", "Joseph", "Joshua", "Joy", "Juan", "Judith", "Julia", "Julie", "Justin", "Kaitlyn",
-                "Karen", "Katherine", "Kathryn", "Katie", "Kayla", "Keith", "Kelly", "Kevin", "Kim", "Kimberly",
-                "Kristen", "Silvestro", "poldo i", "fortes", "De annuntiis"
+                "Advincula Jose Fuerte", "Aguiar Alves Américo Manuel", "Aguiar Retes Carlos", "Ambongo Besungu Fridolin", "Arborelius Anders", "Aveline Jean-Marc", "Aviz João Braz", "Baggio Fabio", "Barbarin Philippe", "Baselios Cleemis",
+                "Battaglia Domenico", "Betori Giuseppe", "Bessi Dogbo Ignace", "Bo Charles Maung", "Bokalic Iglic Vicente", "Bozanić Josip", "Brenes Solórzano Leopoldo José", "Brislin Stephen", "Burke Raymond Leo", "Bustillo François-Xavier",
+                "Bychok Mykola", "Cabrera Herrera Luis Gerardo", "Cantoni Oscar", "Castillo Mattasoglio Carlos Gustavo ", "Chomalí Garib Fernando Natalio", "Chow Sau-yan Stephen", "Clemente Manuel", "Cobo Cano José", "Collins Thomas Christopher", "Costa Paulo Cezar",
+                "Coutts Joseph ", "Cupich Blase J.", "Czerny Michael", "David Pablo Virgilio Siongco", "De Donatis Angelo", "De Kesel Jozef", "Dew John Atcherley", "DiNardo Daniel Nicholas", "Do Carmo da Silva Virgilio", "Dolan Timothy Michael",
+                "Eijk Willem Jacobus", "Erdő Péter", "Farrell Kevin Joseph", "Fernández Víctor Manuel", "Fernández Artime Ángel", "Ferrão Filipe Neri António Sebastião do Rosário", "Filoni Fernando", "Francis Sebastian", "Furtado Arlindo Gomes", "Gambetti Mauro",
+                "García Rodríguez Juan de la Caridad", "Goh William Seng Chye", "Grech Mario", "Gregory Wilton Daniel", "Gugerotti Claudio", "Harvey James Michael", "Hollerich Jean-Claude", "Kambanda Antoine", "Kikuchi Tarcisio Isao", "Koch Kurt",
+                "Koovakad George Jacob", "Kovithavanij Francis Xavier Kriengsak", "Krajewski Konrad", "Kutwa Jean-Pierre", "Lacroix Gérald Cyprien", "Langlois Chibly", "Leo Frank", "Lojudice Augusto Paolo", "López Romero Cristóbal", "Maeda Thomas Aquino Manyo",
+                "Mafi Soane Patita Paini", "Makrickas Rolandas", "Mamberti Dominique", "Marengo Giorgio", "Martínez Flores Adalberto", "Marto António Augusto dos Santos", "Marx Reinhard", "Mathieu Dominique Joseph", "McElroy Robert Walter", "Mendonça José Tolentino de",
+                "Montenegro Francesco", "Mulla Stephen Ameyu Martin", "Müller Gerhard Ludwig", "Nemet Ladislav", "Nichols Gerard Vincent", "Nycz Kazimierz", "Nzapalainga Dieudonné", "Okpaleke Peter Ebere", "Omella Omella Juan José", "Osoro Sierra Carlos",
+                "Ouédraogo Nakellentuba Philippe", "Parolin Pietro", "Patabendige Don Albert Malcolm Ranjith", "Petrocchi Giuseppe", "Pierre Christophe Louis Yves Georges", "Pizzaballa Pierbattista", "Poli Mario Aurelio", "Poola Anthony ", "Prevost Robert Francis", "Puljić Vinko",
+                "Radcliffe Timothy Peter Joseph", "Ramazzini Imeri Álvaro Leonel", "Reina Baldassare", "Repole Roberto", "Ribat John", "Robles Ortega Francisco", "Rocha Sérgio da", "Roche Arthur", "Rossi Ángel Sixto", "Rueda Aparicio Luis José",
+                "Rugambwa Protase", "Ryłko Stanisław", "Ryś Grzegorz", "Sako Louis Raphaël", "Sarah Robert", "Scherer Odilo Pedro", "Semeraro Marcello", "Souraphiel Berhaneyesus Demerew", "Spengler Jaime", "Steiner Leonardo Ulrich",
+                "Sturla Berhouet Daniel Fernando", "Suharyo Hardjoatmodjo Ignatius", "Tagle Luis Antonio Gokim", "Tempesta Orani João", "Tobin Joseph William", "Tsarahazana Désiré", "Tscherrig Emil Paul", "Turkson Peter Kodwo Appiah", "Vesco Jean-Paul", "Woelki Rainer Maria",
+                "You Heung-sik Lazzaro ", "Zenari Mario", "Zuppi Matteo Maria"
         );
 
         Collections.shuffle(total_card);     //viene mescolata la lista

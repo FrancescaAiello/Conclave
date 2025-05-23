@@ -5,7 +5,7 @@ public class Cardinal implements Runnable {
 
     public int influence;                          //influenza del cardinale
     public List<String> total_card;
-    public List<Tuple> Myfavourite;               //*** CAMBIATO: da List<String> a List<Tuple> ***
+    public List<Tuple> Myfavourite;               //crea lista di tuple di preferenze
     public int x_cord;                             //coordinata x
     public int y_cord;                             //coordinata y
     public final List<Cardinal> Thread_list;      //lista con tutti i Thread Cardinal
@@ -22,7 +22,7 @@ public class Cardinal implements Runnable {
 
         this.name = name;                                                       //assegna nome al cardinale
         this.total_card = total_card;                                           //aggiorna lista di tutti i cardinali presenti
-        this.influence = new Random().nextInt(6) + 1;                    //assegna un intero fra 1-6 rappresentante l'influenza del cardinale(NON CAMBIATE<----)
+        this.influence = new Random().nextInt(6) + 1;                    //assegna int 1-6 per influenza cardinale (IMP: influenza != 0)
         this.x_cord = new Random().nextInt(GRID_SIZE);
         this.y_cord = new Random().nextInt(GRID_SIZE);                          // assegna coordinate iniziali random within griglia
 
@@ -60,7 +60,7 @@ public class Cardinal implements Runnable {
             interact();                                        //Cardinal interagisce con i Cardinal nella stessa casella
 
             try {
-                Thread.sleep(100);                        //pausa fra un passo e l'altro
+                Thread.sleep(50);                        //pausa fra un passo e l'altro
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

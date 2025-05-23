@@ -1,0 +1,125 @@
+import java.util.*;
+
+public class Main_c {
+    public static void printCardinalsGrid(List<Cardinal> cardinals) {
+        int[][] grid = new int[30][30];
+
+        for (Cardinal c : cardinals) {
+            if (c.active) {  // Solo cardinali attivi
+                int x = Math.min(29, Math.max(0, c.x_cord));  // Forza coordinate nella griglia
+                int y = Math.min(29, Math.max(0, c.y_cord));
+                grid[x][y]++;
+            }
+        }
+        System.out.println("\n🌍 Mappa dei Cardinali:");
+        for (int y = 0; y < 30; y++) {
+            for (int x = 0; x < 30; x++) {
+                System.out.print(
+                        grid[x][y] == 0 ? " · " :
+                                grid[x][y] <= 2 ? " " + grid[x][y] + " " : " X "
+                );
+            }
+            System.out.println();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+
+        final List<String> total_card = Arrays.asList(    //lista con i nomi di tutti i cardinali che partecipano al conclave
+                "Advincula Jose Fuerte", "Aguiar Alves Américo Manuel", "Aguiar Retes Carlos", "Ambongo Besungu Fridolin", "Arborelius Anders", "Aveline Jean-Marc", "Aviz João Braz", "Baggio Fabio", "Barbarin Philippe", "Baselios Cleemis",
+                "Battaglia Domenico", "Betori Giuseppe", "Bessi Dogbo Ignace", "Bo Charles Maung", "Bokalic Iglic Vicente", "Bozanić Josip", "Brenes Solórzano Leopoldo José", "Brislin Stephen", "Burke Raymond Leo", "Bustillo François-Xavier",
+                "Bychok Mykola", "Cabrera Herrera Luis Gerardo", "Cantoni Oscar", "Castillo Mattasoglio Carlos Gustavo ", "Chomalí Garib Fernando Natalio", "Chow Sau-yan Stephen", "Clemente Manuel", "Cobo Cano José", "Collins Thomas Christopher", "Costa Paulo Cezar",
+                "Coutts Joseph ", "Cupich Blase J.", "Czerny Michael", "David Pablo Virgilio Siongco", "De Donatis Angelo", "De Kesel Jozef", "Dew John Atcherley", "DiNardo Daniel Nicholas", "Do Carmo da Silva Virgilio", "Dolan Timothy Michael",
+                "Eijk Willem Jacobus", "Erdő Péter", "Farrell Kevin Joseph", "Fernández Víctor Manuel", "Fernández Artime Ángel", "Ferrão Filipe Neri António Sebastião do Rosário", "Filoni Fernando", "Francis Sebastian", "Furtado Arlindo Gomes", "Gambetti Mauro",
+                "García Rodríguez Juan de la Caridad", "Goh William Seng Chye", "Grech Mario", "Gregory Wilton Daniel", "Gugerotti Claudio", "Harvey James Michael", "Hollerich Jean-Claude", "Kambanda Antoine", "Kikuchi Tarcisio Isao", "Koch Kurt",
+                "Koovakad George Jacob", "Kovithavanij Francis Xavier Kriengsak", "Krajewski Konrad", "Kutwa Jean-Pierre", "Lacroix Gérald Cyprien", "Langlois Chibly", "Leo Frank", "Lojudice Augusto Paolo", "López Romero Cristóbal", "Maeda Thomas Aquino Manyo",
+                "Mafi Soane Patita Paini", "Makrickas Rolandas", "Mamberti Dominique", "Marengo Giorgio", "Martínez Flores Adalberto", "Marto António Augusto dos Santos", "Marx Reinhard", "Mathieu Dominique Joseph", "McElroy Robert Walter", "Mendonça José Tolentino de",
+                "Montenegro Francesco", "Mulla Stephen Ameyu Martin", "Müller Gerhard Ludwig", "Nemet Ladislav", "Nichols Gerard Vincent", "Nycz Kazimierz", "Nzapalainga Dieudonné", "Okpaleke Peter Ebere", "Omella Omella Juan José", "Osoro Sierra Carlos",
+                "Ouédraogo Nakellentuba Philippe", "Parolin Pietro", "Patabendige Don Albert Malcolm Ranjith", "Petrocchi Giuseppe", "Pierre Christophe Louis Yves Georges", "Pizzaballa Pierbattista", "Poli Mario Aurelio", "Poola Anthony ", "Prevost Robert Francis", "Puljić Vinko",
+                "Radcliffe Timothy Peter Joseph", "Ramazzini Imeri Álvaro Leonel", "Reina Baldassare", "Repole Roberto", "Ribat John", "Robles Ortega Francisco", "Rocha Sérgio da", "Roche Arthur", "Rossi Ángel Sixto", "Rueda Aparicio Luis José",
+                "Rugambwa Protase", "Ryłko Stanisław", "Ryś Grzegorz", "Sako Louis Raphaël", "Sarah Robert", "Scherer Odilo Pedro", "Semeraro Marcello", "Souraphiel Berhaneyesus Demerew", "Spengler Jaime", "Steiner Leonardo Ulrich",
+                "Sturla Berhouet Daniel Fernando", "Suharyo Hardjoatmodjo Ignatius", "Tagle Luis Antonio Gokim", "Tempesta Orani João", "Tobin Joseph William", "Tsarahazana Désiré", "Tscherrig Emil Paul", "Turkson Peter Kodwo Appiah", "Vesco Jean-Paul", "Woelki Rainer Maria",
+                "You Heung-sik Lazzaro ", "Zenari Mario", "Zuppi Matteo Maria"
+        );
+
+        Collections.shuffle(total_card);     //viene mescolata la lista
+        final List<String> papable_list = new ArrayList<>(total_card.subList(0, (15*total_card.size())/100));    //viene creata una lista dei papabili
+        List<Cardinal> Thread_list = new ArrayList<>();           //inizializza una lista contenente Thread Cardinal
+
+        for (String name : total_card) {
+            Cardinal c = new Cardinal(name, total_card, papable_list, Thread_list);          //crea e avvia i thread
+            new Thread(c).start();
+
+
+        }
+
+
+        boolean white_smoke = false;        //inizializza una variabile white_smoke con un valore false
+
+        while (!white_smoke) {              //se non c'è stata la fumata bianca avvia il processo di votazione
+            Thread.sleep(10000);      // votazione avviene ogni 10 secondi
+
+            // Inizio votazione
+            Cardinal.startVoting(); //comunica ai Cardinal che è iniziata la votazione
+            printCardinalsGrid(Thread_list);
+
+            List<Tuple> voti = new ArrayList<>();                //inizializza una lista di Tuple
+
+            synchronized (Thread_list) {              //blocco sincronizzato con la lista dei Thread
+
+                for (Cardinal c : Thread_list) {
+                    // *** CORRETTA: accesso al nome della tupla ***
+                    String voto = c.Myfavourite.get(0).name;           //per ogni Cardinal viene estratto il primo cardinale nella lista delle preferenze
+
+                    boolean trovato = false;             //inizializza una variabile found per verificare se il cardinale votato è già nella lista dei voti
+
+                    for (Tuple t : voti) {
+                        if (t.name.equals(voto)) {
+                            t.score++;                      //se il cardinale è già presente nella lista dei voti, allora incrementa il suo voto di 1
+                            trovato = true;
+                            break;                          //esce dalla votazione
+                        }
+                    }
+
+                    if (!trovato) {                             //se il cardinale votato non è nella lista dei voti
+                        voti.add(new Tuple(voto, 1));     //viene aggiunto
+                    }
+                }
+
+                System.out.println("\nRisultati votazione:");
+                for (Tuple t : voti) {//viene stampata la lista dei voti
+                    String bar = "";
+                    for (int i = 0; i < t.score/2; i++){
+                        bar += "▰";
+                    }
+                    System.out.println("-" + t.name + ": " + t.score + " voti " + bar);
+                }
+            }
+
+            int min_soil = (int) Math.ceil((2.0 / 3.0) * total_card.size());             //in java la divisione viene approssimata per difetto, quindi 2/3 darebbe 0, quindi viene fatta una divisione fra float, arrotondata e convertita ad int
+
+            for (Tuple t : voti) {
+                if (t.score >= min_soil) {//se nella lista dei voti c'è un cardinale con voto più
+                    System.out.println("⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "FUMATA BIANCA! IL NUOVO PAPA È STATO ELETTO!");
+                    System.out.println("\n⚪ Il nuovo Papa è: " + t.name + " con " + t.score + " voti! ⚪\n");       //di 2/3 dei cardinali, allora fumata bianca
+                    white_smoke = true;
+                    break;
+                }
+            }
+
+            if (!white_smoke) {
+                Cardinal.endVoting();               //se fumata nera, viene interrotto il processo di votazione, permettendo ad ogni Cardinal di tornare a muoversi
+            }
+        }
+
+        synchronized (Thread_list) {
+            for (Cardinal c : Thread_list) {                                 //dopo la fumata bianca viene disattivato ogni Cardinal
+                c.active = false;
+            }
+        }
+
+        System.out.println("Simulazione terminata.");
+    }
+}

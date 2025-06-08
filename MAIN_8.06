@@ -1,0 +1,126 @@
+import java.util.*;
+
+public class Main_c {
+    public static void printCardinalsGrid(List<Cardinal> cardinals) {
+        int[][] grid = new int[30][30];
+
+        for (Cardinal c : cardinals) {
+            if (c.active) {
+                int x = Math.min(29, Math.max(0, c.x_cord));
+                int y = Math.min(29, Math.max(0, c.y_cord));
+                grid[x][y]++;
+            }
+        }
+        System.out.println("\n Cardinals Grid");
+        for (int y = 0; y < 30; y++) {
+            for (int x = 0; x < 30; x++) {
+                System.out.print(
+                        grid[x][y] == 0 ? " · " :
+                                grid[x][y] <= 2 ? " " + grid[x][y] + " " : " X "
+                );
+            }
+            System.out.println();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+
+        final List<String> total_card = Arrays.asList(
+                "Advincula Jose Fuerte", "Aguiar Alves Américo Manuel", "Aguiar Retes Carlos", "Ambongo Besungu Fridolin", "Arborelius Anders", "Aveline Jean-Marc", "Aviz João Braz", "Baggio Fabio", "Barbarin Philippe", "Baselios Cleemis",
+                "Battaglia Domenico", "Betori Giuseppe", "Bessi Dogbo Ignace", "Bo Charles Maung", "Bokalic Iglic Vicente", "Bozanić Josip", "Brenes Solórzano Leopoldo José", "Brislin Stephen", "Burke Raymond Leo", "Bustillo François-Xavier",
+                "Bychok Mykola", "Cabrera Herrera Luis Gerardo", "Cantoni Oscar", "Castillo Mattasoglio Carlos Gustavo ", "Chomalí Garib Fernando Natalio", "Chow Sau-yan Stephen", "Clemente Manuel", "Cobo Cano José", "Collins Thomas Christopher", "Costa Paulo Cezar",
+                "Coutts Joseph ", "Cupich Blase J.", "Czerny Michael", "David Pablo Virgilio Siongco", "De Donatis Angelo", "De Kesel Jozef", "Dew John Atcherley", "DiNardo Daniel Nicholas", "Do Carmo da Silva Virgilio", "Dolan Timothy Michael",
+                "Eijk Willem Jacobus", "Erdő Péter", "Farrell Kevin Joseph", "Fernández Víctor Manuel", "Fernández Artime Ángel", "Ferrão Filipe Neri António Sebastião do Rosário", "Filoni Fernando", "Francis Sebastian", "Furtado Arlindo Gomes", "Gambetti Mauro",
+                "García Rodríguez Juan de la Caridad", "Goh William Seng Chye", "Grech Mario", "Gregory Wilton Daniel", "Gugerotti Claudio", "Harvey James Michael", "Hollerich Jean-Claude", "Kambanda Antoine", "Kikuchi Tarcisio Isao", "Koch Kurt",
+                "Koovakad George Jacob", "Kovithavanij Francis Xavier Kriengsak", "Krajewski Konrad", "Kutwa Jean-Pierre", "Lacroix Gérald Cyprien", "Langlois Chibly", "Leo Frank", "Lojudice Augusto Paolo", "López Romero Cristóbal", "Maeda Thomas Aquino Manyo",
+                "Mafi Soane Patita Paini", "Makrickas Rolandas", "Mamberti Dominique", "Marengo Giorgio", "Martínez Flores Adalberto", "Marto António Augusto dos Santos", "Marx Reinhard", "Mathieu Dominique Joseph", "McElroy Robert Walter", "Mendonça José Tolentino de",
+                "Montenegro Francesco", "Mulla Stephen Ameyu Martin", "Müller Gerhard Ludwig", "Nemet Ladislav", "Nichols Gerard Vincent", "Nycz Kazimierz", "Nzapalainga Dieudonné", "Okpaleke Peter Ebere", "Omella Omella Juan José", "Osoro Sierra Carlos",
+                "Ouédraogo Nakellentuba Philippe", "Parolin Pietro", "Patabendige Don Albert Malcolm Ranjith", "Petrocchi Giuseppe", "Pierre Christophe Louis Yves Georges", "Pizzaballa Pierbattista", "Poli Mario Aurelio", "Poola Anthony ", "Prevost Robert Francis", "Puljić Vinko",
+                "Radcliffe Timothy Peter Joseph", "Ramazzini Imeri Álvaro Leonel", "Reina Baldassare", "Repole Roberto", "Ribat John", "Robles Ortega Francisco", "Rocha Sérgio da", "Roche Arthur", "Rossi Ángel Sixto", "Rueda Aparicio Luis José",
+                "Rugambwa Protase", "Ryłko Stanisław", "Ryś Grzegorz", "Sako Louis Raphaël", "Sarah Robert", "Scherer Odilo Pedro", "Semeraro Marcello", "Souraphiel Berhaneyesus Demerew", "Spengler Jaime", "Steiner Leonardo Ulrich",
+                "Sturla Berhouet Daniel Fernando", "Suharyo Hardjoatmodjo Ignatius", "Tagle Luis Antonio Gokim", "Tempesta Orani João", "Tobin Joseph William", "Tsarahazana Désiré", "Tscherrig Emil Paul", "Turkson Peter Kodwo Appiah", "Vesco Jean-Paul", "Woelki Rainer Maria",
+                "You Heung-sik Lazzaro ", "Zenari Mario", "Zuppi Matteo Maria"
+        );
+
+        Collections.shuffle(total_card);
+        final List<String> papable_list = new ArrayList<>(total_card.subList(0, (15*total_card.size())/100));    //likely to be voted list
+        List<Cardinal> Thread_list = new ArrayList<>();           //Thread Cardinals list initialization
+
+        for (String name : total_card) {
+            Cardinal c = new Cardinal(name, total_card, papable_list, Thread_list);          //we create and start the Threads
+            new Thread(c).start();
+
+
+        }
+
+
+        boolean white_smoke = false;
+
+        while (!white_smoke) {                   //if not yet white smoke, start voting
+            Thread.sleep(10000);
+
+
+            Cardinal.startVoting();                     //Cardinals notified: Voting is started
+            printCardinalsGrid(Thread_list);
+
+            List<Tuple> votes = new ArrayList<>();
+
+
+            synchronized (Thread_list) {
+
+                for (Cardinal c : Thread_list) {
+                    String vote = c.Myfavourite.get(0).name;           //foreach Cardinal---> get first position
+
+                    boolean trovato = false;           //check if preference already in list
+
+                    for (Tuple t : votes) {
+                        if (t.name.equals(vote)) {                   //voting process per Cardinal
+                            t.score++;
+                            trovato = true;
+                            break;
+                        }
+                    }
+
+                    if (!trovato) {
+                        votes.add(new Tuple(vote, 1));
+                    }
+                }
+
+                System.out.println("\nVoting results:");
+                for (Tuple t : votes) {                     //votings
+                    String bar = "";
+                    for (int i = 0; i < t.score/2; i++){
+                        bar += "▰";
+                    }
+                    System.out.println("-" + t.name + ": " + t.score + " votes " + bar);
+                }
+            }
+
+            int min_valueAllowed = (int) Math.ceil((2.0 / 3.0) * total_card.size());
+
+            for (Tuple t : votes) {
+                if (t.score >= min_valueAllowed) {
+                    System.out.println("⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪⚪  \n" +
+                            "WHITE SMOKE! THE NEW POPE HAS BEEN ELECTED!!");
+
+
+                    System.out.println("\n⚪ The new Pope is: " + t.name + " with" + t.score + " votes! ⚪\n");
+                    white_smoke = true;
+                    break;
+                }
+            }
+
+            if (!white_smoke) {
+                Cardinal.endVoting();              //if black smoke, voting failed ----> Cardinals start moving again
+        }
+
+        synchronized (Thread_list) {
+            for (Cardinal c : Thread_list) {                                 //after white smoke CardinalThreads are deactivated
+                c.active = false;
+            }
+        }
+
+        System.out.println("Simulazione terminata.");
+    }
+}
